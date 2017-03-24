@@ -30,7 +30,7 @@ public class SystemMonitor {
 	Environment env;
 	
 	@Autowired
-	FeedbackPost feedbackPost;
+	List<FeedbackPost> feedbackPost;
 	
 	@Scheduled(fixedDelay = 15000)
     public void checkSystemHeath() {
@@ -47,7 +47,7 @@ public class SystemMonitor {
 	    boolean warnOnDiskUsage = checkDiskUsage(hal, os, builder);
 
 	    if( warnOnDiskUsage ){
-	    	feedbackPost.post(builder.toString());
+	    	feedbackPost.forEach( it -> it.post(builder.toString()) );
 	    }
     }
 

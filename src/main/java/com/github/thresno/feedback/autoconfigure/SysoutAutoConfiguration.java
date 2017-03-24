@@ -19,14 +19,14 @@ public class SysoutAutoConfiguration {
 	public FeedbackPost sysoutFeedback(){
 		return System.out::println;
 	}
-	
-	static class SysoutConditional extends AnyNestedCondition {
 
+	static class SysoutConditional extends AnyNestedCondition {
+	
 		public SysoutConditional() {
-			super(ConfigurationPhase.PARSE_CONFIGURATION);
+			super(ConfigurationPhase.REGISTER_BEAN);
 		}
 	
-		@ConditionalOnMissingBean(value={RocketChatFeedback.class})
+		@ConditionalOnMissingBean(RocketChatFeedback.class)
 		static class MissingRocketChatFeedbackBean {
 		}
 		
