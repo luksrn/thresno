@@ -25,6 +25,7 @@ repositories {
 }
 
 dependencies {
+	compile('org.springframework.boot:spring-boot-starter-validation')
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('com.github.dblock:oshi-core:3.4.0')
 	compile('com.github.baloise:rocket-chat-rest-client:0.1.2-SNAPSHOT')
