@@ -1,4 +1,4 @@
-package com.github.thresno.feedback.autoconfigure;
+package com.github.thresno.autoconfigure.listeners;
 
 import org.springframework.boot.autoconfigure.condition.AnyNestedCondition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -7,17 +7,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.thresno.feedback.FeedbackPost;
-import com.github.thresno.feedback.RocketChatFeedback;
-import com.github.thresno.feedback.autoconfigure.SysoutAutoConfiguration.SysoutConditional;
+import com.github.thresno.autoconfigure.listeners.SysoutAutoConfiguration.SysoutConditional;
+import com.github.thresno.monitor.AlertEventListener;
+import com.github.thresno.monitor.listeners.RocketChatListener;
+import com.github.thresno.monitor.listeners.SysoutListener;
 
 @Configuration
 @Conditional(SysoutConditional.class)
 public class SysoutAutoConfiguration {
 
 	@Bean
-	public FeedbackPost sysoutFeedback(){
-		return System.out::println;
+	public AlertEventListener sysoutFeedback(){
+		return new SysoutListener();
 	}
 
 	static class SysoutConditional extends AnyNestedCondition {
@@ -26,7 +27,7 @@ public class SysoutAutoConfiguration {
 			super(ConfigurationPhase.REGISTER_BEAN);
 		}
 	
-		@ConditionalOnMissingBean(RocketChatFeedback.class)
+		@ConditionalOnMissingBean(RocketChatListener.class)
 		static class MissingRocketChatFeedbackBean {
 		}
 		

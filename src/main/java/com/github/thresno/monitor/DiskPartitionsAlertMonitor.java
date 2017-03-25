@@ -8,13 +8,12 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
-import com.github.thresno.service.SystemInformationFormater;
-
 import oshi.SystemInfo;
 import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
+import oshi.util.FormatUtil;
 
-public class DiskPartitionsMonitor implements Monitor, EnvironmentAware , ApplicationEventPublisherAware {
+public class DiskPartitionsAlertMonitor implements AlertMonitor, EnvironmentAware , ApplicationEventPublisherAware {
 
 	private ApplicationEventPublisher applicationEventPublisher;
 	
@@ -24,10 +23,11 @@ public class DiskPartitionsMonitor implements Monitor, EnvironmentAware , Applic
 	public void verify(SystemInfo si) {
 		OperatingSystem os = si.getOperatingSystem();
 
-		StringBuilder builder = new StringBuilder();
-
 		OSFileStore[] fsArray = os.getFileSystem().getFileStores();
 		List<String> checkFileStoredVisited = new ArrayList<String>( fsArray.length );
+
+		StringBuilder builder = new StringBuilder();
+
 		for (OSFileStore fs : fsArray) {
 
 			if( checkFileStoredVisited.contains(fs.getUUID()) ){
@@ -41,16 +41,17 @@ public class DiskPartitionsMonitor implements Monitor, EnvironmentAware , Applic
 
 			double percentualFree = 100d * usable / total;
 
-			Event.Type eventType = typeOfEvent(percentualFree);
-			if ( eventType != null ) {
+			AlertEvent.Type eventType = resolveTypeOfEvent(percentualFree);
+			if ( eventType != null && isFileStoreMonitored(fs)) {
 
-				SystemInformationFormater.printDisks(si.getHardware().getDiskStores(), builder);
-				SystemInformationFormater.printFileSystem(os.getFileSystem(), builder);
+				logFileStoreStatus( fs , builder);
 				
-				Event e = new Event();
+				
+				AlertEvent e = new AlertEvent();
 				e.setType(eventType);
-				e.setTitle(String.format(" %.1f%% space free at %s mounted at %s%n", 100d * usable / total,fs.getVolume(), fs.getMount()));
+				e.setTitle(String.format("File Store Alert: %.1f%% space free at %s mounted at %s", 100d * usable / total,fs.getVolume(), fs.getMount()));
 				e.setDetails( builder.toString() );
+				
 				applicationEventPublisher.publishEvent( e );
 				
 				builder = new StringBuilder();
@@ -59,19 +60,33 @@ public class DiskPartitionsMonitor implements Monitor, EnvironmentAware , Applic
  
 	}
 	
-	private Event.Type typeOfEvent(double percentualFree){
+	private boolean isFileStoreMonitored(OSFileStore fs){
+		return !fs.getType().equals("");
+	}
+	
+	private AlertEvent.Type resolveTypeOfEvent(double percentualFree){
 		if(env.containsProperty("thresno.monitor.check-partition.threshold")){
 
 			Integer threshold = env.getProperty("thresno.monitor.check-partition.threshold", Integer.class);
 			
 			if( percentualFree < threshold.doubleValue() ){
-				return Event.Type.WARNING;
+				return AlertEvent.Type.WARNING;
 			}
 			return null;
 		}
 		
-		return Event.Type.INFO;
+		return AlertEvent.Type.INFO;
 	}
+ 
+    
+    private void logFileStoreStatus(OSFileStore fs, StringBuilder builder){
+    	long usable = fs.getUsableSpace();
+        long total = fs.getTotalSpace();
+        builder.append(String.format("** %s (%s) [%s] %s of %s free (%.1f%%) is %s and is mounted at %s%n", fs.getName(),
+                fs.getDescription().isEmpty() ? "file system" : fs.getDescription(), fs.getType(),
+                FormatUtil.formatBytes(usable), FormatUtil.formatBytes(fs.getTotalSpace()), 100d * usable / total,
+                fs.getVolume(), fs.getMount()));
+    }
 
 	@Override
 	public void setEnvironment(Environment environment) {

@@ -1,4 +1,4 @@
-package com.github.thresno.feedback.autoconfigure;
+package com.github.thresno.autoconfigure.listeners;
 
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.thresno.feedback.FeedbackPost;
-import com.github.thresno.feedback.RocketChatFeedback;
-import com.github.thresno.feedback.autoconfigure.RocketChatAutoConfiguration.RocketChatCondition;
+import com.github.thresno.autoconfigure.listeners.RocketChatAutoConfiguration.RocketChatCondition;
+import com.github.thresno.monitor.AlertEventListener;
+import com.github.thresno.monitor.listeners.RocketChatListener;
 
 @Configuration
 @Conditional(RocketChatCondition.class)
@@ -24,8 +24,8 @@ public class RocketChatAutoConfiguration {
 	}
 
 	@Bean
-	public FeedbackPost rocketChatFeedbackPost(){
-		return new RocketChatFeedback(properties);
+	public AlertEventListener rocketChatFeedbackPost(){
+		return new RocketChatListener(properties);
 	}
 	
 	static class RocketChatCondition extends AllNestedConditions {

@@ -1,4 +1,4 @@
-package com.github.thresno.feedback.autoconfigure;
+package com.github.thresno.autoconfigure.listeners;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.boot.context.properties.ConfigurationProperties;

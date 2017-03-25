@@ -1,6 +1,6 @@
 package com.github.thresno.monitor;
 
-public class Event {
+public class AlertEvent {
 	
 	enum Type {
 		WARNING, INFO
@@ -11,7 +11,11 @@ public class Event {
 	private String title;
 	
 	private String details;
+	
+	/** System time when the event happened */
+	private final long timestamp = System.currentTimeMillis();
 
+	
 	public String getTitle() {
 		return title;
 	}
@@ -32,14 +36,17 @@ public class Event {
 		return type;
 	}
 	
-
 	public void setType(Type type) {
 		this.type = type;
 	}
 	
+	public long getTimestamp() {
+		return timestamp;
+	}
+	
 	@Override
 	public String toString() {
-		return "[" + getType() + "]" + getTitle() + "\n" + getDetails() + "\n";
+		return "[ " + getType() + " ] " + getTitle() + "\n" + getDetails();
 	}
 	
 }

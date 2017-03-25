@@ -7,19 +7,29 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import com.github.thresno.autoconfigure.MonitorAutoConfiguration.DiskPartitionsMonitorConfiguration.DiskPartitionsCondition;
-import com.github.thresno.monitor.DiskPartitionsMonitor;
+import com.github.thresno.monitor.DiskPartitionsAlertMonitor;
+import com.github.thresno.monitor.MemoryAlertMonitor;
 
 @Configuration
 @ConditionalOnProperty(prefix = "thresno.monitor", name = "auto", havingValue = "true", matchIfMissing = true)
 public class MonitorAutoConfiguration {
 	
 	@Configuration
+	static class MemoryMonitorConfiguration {
+		
+		@Bean
+		public MemoryAlertMonitor memoryAlertMonitor(){
+			return new MemoryAlertMonitor();
+		}
+	}
+	
+	@Configuration
 	@Conditional(DiskPartitionsCondition.class)
 	static class DiskPartitionsMonitorConfiguration {
 		
 		@Bean
-		public DiskPartitionsMonitor diskPartitionsMonitor(){
-			return new DiskPartitionsMonitor();
+		public DiskPartitionsAlertMonitor diskPartitionsMonitor(){
+			return new DiskPartitionsAlertMonitor();
 		}
 		
 		
