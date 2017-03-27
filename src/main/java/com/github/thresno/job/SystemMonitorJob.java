@@ -23,16 +23,20 @@ public class SystemMonitorJob {
 
 	@Autowired
 	List<AlertMonitor> monitors;
+
+	SystemInfo si = new SystemInfo();
+	
+	{
+		// Initialize
+	    si.getHardware();
+	    si.getOperatingSystem();
+	}
 	
 	@Scheduled(fixedDelay = 15000)
     public void checkSystemHeath() {
  
         log.debug("Checking system status now {}", dateFormat.format(new Date()));
         
-		SystemInfo si = new SystemInfo();
-		// Initialize
-	    si.getHardware();
-	    si.getOperatingSystem();
 	    
 	    for(AlertMonitor monitor : monitors ){
 	    	monitor.verify(si);

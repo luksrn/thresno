@@ -6,9 +6,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class ThresholdNotifierApplication {
+public class App {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ThresholdNotifierApplication.class, args);
+		SpringApplication.run(App.class, args);
     }
 }

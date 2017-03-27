@@ -33,7 +33,6 @@ public class MemoryAlertMonitor implements AlertMonitor, EnvironmentAware , Appl
 			
 			applicationEventPublisher.publishEvent( e );
 			
-			builder = new StringBuilder();
 		}
 	}
 
@@ -46,7 +45,7 @@ public class MemoryAlertMonitor implements AlertMonitor, EnvironmentAware , Appl
 	private AlertEvent.Type resolveTypeOfEvent(double percentualFree){
 		if(env.containsProperty("thresno.monitor.check-memory.threshold")){
 
-			Integer threshold = env.getProperty("thresno.monitor.check-memory.threshold", Integer.class);
+			Long threshold = env.getProperty("thresno.monitor.check-memory.threshold", Long.class);
 			
 			if( percentualFree < threshold.doubleValue() ){
 				return AlertEvent.Type.WARNING;
