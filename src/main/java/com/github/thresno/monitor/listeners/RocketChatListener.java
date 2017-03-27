@@ -29,7 +29,7 @@ public class RocketChatListener implements AlertEventListener , EnvironmentAware
 	}
 
 	@Override
-	public void onAlertEvent(AlertEvent e) {
+	public void onApplicationEvent(AlertEvent e) {
 		try{
 	        RocketChatClient rc = new RocketChatClient( 
 	        		properties.getHost(), properties.getUser(), properties.getPassword());

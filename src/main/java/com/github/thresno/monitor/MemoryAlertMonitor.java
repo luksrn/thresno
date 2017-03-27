@@ -26,7 +26,7 @@ public class MemoryAlertMonitor implements AlertMonitor, EnvironmentAware , Appl
 			
 			logMemory(globalMemory, builder);
 			
-			AlertEvent e = new AlertEvent();
+			AlertEvent e = new AlertEvent(globalMemory);
 			e.setType(eventType);
 			e.setTitle(String.format("Memory alert."));
 			e.setDetails( builder.toString() );

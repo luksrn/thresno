@@ -1,6 +1,8 @@
 package com.github.thresno.monitor;
 
-public class AlertEvent {
+import org.springframework.context.ApplicationEvent;
+
+public class AlertEvent extends ApplicationEvent {
 	
 	enum Type {
 		WARNING, INFO
@@ -12,10 +14,10 @@ public class AlertEvent {
 	
 	private String details;
 	
-	/** System time when the event happened */
-	private final long timestamp = System.currentTimeMillis();
+	public AlertEvent(Object source) {
+		super(source);
+	}
 
-	
 	public String getTitle() {
 		return title;
 	}
@@ -40,9 +42,6 @@ public class AlertEvent {
 		this.type = type;
 	}
 	
-	public long getTimestamp() {
-		return timestamp;
-	}
 	
 	@Override
 	public String toString() {

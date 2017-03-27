@@ -1,8 +1,9 @@
 package com.github.thresno.monitor;
 
-@FunctionalInterface
-public interface AlertEventListener {	
+import org.springframework.context.ApplicationListener;
+
+public interface AlertEventListener extends ApplicationListener<AlertEvent>{	
 	
-	public void onAlertEvent(AlertEvent msg);
+	void onApplicationEvent(AlertEvent event);
 	
 }

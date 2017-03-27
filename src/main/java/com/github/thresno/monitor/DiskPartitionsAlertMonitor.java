@@ -47,7 +47,7 @@ public class DiskPartitionsAlertMonitor implements AlertMonitor, EnvironmentAwar
 				logFileStoreStatus( fs , builder);
 				
 				
-				AlertEvent e = new AlertEvent();
+				AlertEvent e = new AlertEvent(fs);
 				e.setType(eventType);
 				e.setTitle(String.format("File Store Alert: %.1f%% space free at %s mounted at %s", 100d * usable / total,fs.getVolume(), fs.getMount()));
 				e.setDetails( builder.toString() );
