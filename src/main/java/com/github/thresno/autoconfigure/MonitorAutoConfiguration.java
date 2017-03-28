@@ -8,12 +8,37 @@ import org.springframework.context.annotation.Configuration;
 
 import com.github.thresno.autoconfigure.MonitorAutoConfiguration.DiskPartitionsMonitorConfiguration.DiskPartitionsCondition;
 import com.github.thresno.autoconfigure.MonitorAutoConfiguration.MemoryMonitorConfiguration.MemoryConditions;
+import com.github.thresno.autoconfigure.MonitorAutoConfiguration.ProcessesMonitorConfiguration.ProccessConditions;
 import com.github.thresno.monitor.DiskPartitionsAlertMonitor;
 import com.github.thresno.monitor.MemoryAlertMonitor;
+import com.github.thresno.monitor.ProcessesAlertMonitor;
 
 @Configuration
 @ConditionalOnProperty(prefix = "thresno.monitor", name = "auto", havingValue = "true", matchIfMissing = true)
 public class MonitorAutoConfiguration {
+	
+	@Configuration
+	@Conditional(ProccessConditions.class)
+	static class ProcessesMonitorConfiguration {
+		
+		@Bean
+		public ProcessesAlertMonitor processAlertMonitor(){
+			return new ProcessesAlertMonitor();
+		}
+		
+		static class ProccessConditions extends AnyNestedCondition {
+
+			public ProccessConditions() {
+				super(ConfigurationPhase.PARSE_CONFIGURATION);
+			}
+			
+			@ConditionalOnProperty(prefix="thresno.monitor.check-process",name="by-pid")
+			static class CheckProcessByPid {
+				
+			}
+			
+		}
+	}
 	
 	@Configuration
 	@Conditional(MemoryConditions.class)
